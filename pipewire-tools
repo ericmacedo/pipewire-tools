@@ -1,0 +1,36 @@
+#!/bin/bash
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+MODULES_DIR="$SCRIPT_DIR/modules"
+
+show_help() {
+    echo "Usage: pipewire-tools <command> [options]"
+    echo ""
+    echo "A simple modular tool to manage and cycle PipeWire/WirePlumber output devices."
+    echo ""
+    echo "Commands:"
+    echo "  cycle     Cycle output devices forward or backward"
+    echo "  device    Manage devices and their ignore flags"
+    echo ""
+    echo "Options:"
+    echo "  -h, --help    Show this help message and exit"
+    echo ""
+    echo "Run 'pipewire-tools <command> --help' for more information on a specific command."
+}
+
+if [[ $# -eq 0 || "$1" == "-h" || "$1" == "--help" ]]; then
+    show_help
+    exit 0
+fi
+
+COMMAND="$1"
+shift
+
+if [[ -f "$MODULES_DIR/$COMMAND.sh" ]]; then
+    exec bash "$MODULES_DIR/$COMMAND.sh" "$@"
+else
+    echo "Error: Unknown command '$COMMAND'"
+    echo ""
+    show_help
+    exit 1
+fi
